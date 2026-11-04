@@ -1,0 +1,14 @@
+# Dependencies for scripts/studio_lint.py (Python 3.10-3.13; tested on 3.12).
+#
+# studio_lint builds the payload that `rasa studio upload` sends with
+# rasa-pro's own importer, so rasa-pro is required.
+# Pin it to the SAME version you run `rasa studio upload` with. Tested with 3.18.10.
+rasa-pro==3.18.10
+
+# YAML reading/round-trip (YAML 1.2, like Studio). Installed by rasa-pro too;
+# listed because the script imports it directly.
+ruamel.yaml>=0.17
+
+# Optional but recommended: checks language codes against the IANA registry,
+# closer to Studio's own check. Without it the script uses a simpler regex.
+langcodes>=3.4
