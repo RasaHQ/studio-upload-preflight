@@ -5,7 +5,8 @@
 You get three files: `studio_lint.py`, `requirements.txt` and this README. Run the script from your Rasa project root. The examples assume `studio_lint.py` is in that folder; if you keep it elsewhere, use its path instead, for example `python tools/studio_lint.py`.
 
 - **Built for:** Rasa Studio **1.17.x**. The checks match Studio's upload validation, which is the same in every release from 1.17.0 to 1.17.7.
-- **Needs:** Python 3.12 with `rasa-pro` installed. The script uses Rasa's own importer, so it sees your project exactly as `rasa studio upload` does. In a fresh virtualenv, run `pip install -r requirements.txt`, after setting `rasa-pro` in that file to the version you upload with. A run takes a few seconds.
+- **Needs:** `rasa-pro` installed, on any Python version your `rasa-pro` supports (3.10–3.13 for Rasa Pro 3.18; tested on 3.12). The easiest option is the same environment you run `rasa studio upload` in. The script uses Rasa's own importer, so it sees your project exactly as `rasa studio upload` does. In a fresh virtualenv, run `pip install -r requirements.txt`, after setting `rasa-pro` in that file to the version you upload with. A run takes a few seconds.
+- **Rasa Pro versions:** 3.18 to 3.21. It was tested on 3.18.10. For 3.19 to 3.21, the Rasa code the script relies on and the upload payload were checked and are unchanged, but the script hasn't been run on those versions yet.
 - **Changes your project?** No, it only reads it.
 
 ## Run it
@@ -69,8 +70,9 @@ The `--json` file includes `file` and `line` for each finding.
 
 ## Know its limits
 
-- **It mirrors Studio's checks but isn't Studio.** If an upload still fails after a clean lint, send the Studio error message to your Rasa contact so the missing rule can be added.
-- **Studio's built-in defaults may differ slightly.** Studio checks references against its own default patterns, slots and actions. The lint uses the installed Rasa Pro's defaults, which are very close but not identical.
+- **It mirrors Studio's checks but isn't Studio.** If an upload still fails after a clean lint, send the Studio error message to Lena so the missing rule can be added. Alternatively, add them yourself.
+- **Studio's built-in defaults may differ slightly.** Studio checks references against its own default patterns, slots and actions. The lint uses the installed Rasa Pro's defaults, which are very close but not identical. Newer Rasa Pro versions may add built-ins that Studio 1.17 doesn't know about, so a reference to one could pass the lint and still fail in Studio.
+- **Newer Rasa Pro fields aren't flagged.** Rasa Pro 3.19 to 3.21 added optional fields: `on_activate` and `metadata` on flows, `collect-tool-binding` on collect steps, and `allow_llm_set` on slots. Studio 1.17 most likely drops them silently on upload, and the lint doesn't warn about them.
 - **`context.*` conditions aren't checked.** The list of valid contexts lives inside Studio.
 - **Problems on a broken step can show up one at a time.** If a step doesn't have exactly one of `collect`, `action`, `link`, `set_slots`, `call` or `noop`, its other checks are skipped until you fix it.
 - **Re-check after a Studio upgrade beyond 1.17.x.** The rules may change.
